@@ -1,21 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const messagecontent = require("./dbmessages");
-const Pusher = require("pusher");
 const cors = require("cors");
 
 const path = require("path");
 //App config
 const app = express();
-const PORT = process.env.PORT || 8080;
-
-const pusher = new Pusher({
-  appId: "1071953",
-  key: "83b1990dfbf005086c07",
-  secret: "10c4b2d1ad0a41efc880",
-  cluster: "us2",
-  encrypted: true,
-});
+const PORT = process.env.PORT || 9000;
 
 //DB Config
 const URL_DB =
@@ -33,31 +24,6 @@ const Messages = messagecontent.messagecontent;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-const db = mongoose.connection;
-
-db.once("open", () => {
-  console.log("DB connected");
-
-  const msgCollection = db.collection("messagecontents");
-  const changeStream = msgCollection.watch();
-
-  changeStream.on("change", (change) => {
-    console.log(change);
-
-    if (change.operationType === "insert") {
-      const messageDetails = change.fullDocument;
-      pusher.trigger("messages", "inserted", {
-        name: messageDetails.name,
-        message: messageDetails.message,
-        timestamp: messageDetails.timestamp,
-        received: messageDetails.received,
-      });
-    } else {
-      console.log("Error triggering Pusher");
-    }
-  });
-});
 
 // API Router
 app.get("/", (req, res) => {
