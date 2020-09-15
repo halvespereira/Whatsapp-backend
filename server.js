@@ -13,14 +13,11 @@ const PORT = process.env.PORT || 9000;
 const URL_DB =
   "mongodb+srv://admin:nP3N5LCfq1uDt6wN@cluster0.uffwi.mongodb.net/whatsappdb?retryWrites=true&w=majority";
 
-mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost/whatsapp-project-hp",
-  {
-    useCreateIndex: true,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+mongoose.connect(URL_DB || "mongodb://localhost/whatsapp-project-hp", {
+  useCreateIndex: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const Messages = messagecontent.messagecontent;
 
